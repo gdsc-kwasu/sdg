@@ -1,3 +1,7 @@
+# first things first, do;
+
+### `yarn install`
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
@@ -5,34 +9,64 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 First, run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Project structure
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Since We're going to be working on this together. Sit tight, Let's walk through the architecture of the project.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+[src/](src) is where most of the magic will be made. In it we have [components/](src/components), [containers/](src/containers), [layout/](src/layout), and [utils/](src/utils).
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+All reusable components should go into the `components/` folder. Reusable in this sense, refers to components that have global scope, some example could be `<Button />`, `<Search />` and `<Card />` components. Feel free to add more.
 
-## Learn More
+We shouldn't bloat the files in the `pages/` route. Instead, let's have scoped page/route components in the `containers/`. If you go into the containers folder. You'll see that we have two dummy components, residing in `home/` and `users/`. As we progress you can add more components that are scoped to the pages route in this folder.
 
-To learn more about Next.js, take a look at the following resources:
+> ## Only pages components should be in the `containers/` subdir, please.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+To see this, in action. You can open the [`pages/index.js`](pages/index.js), and you'll see how the component is referenced. When you look closely, you'd also see that the way the component is being imported is a bit different.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```js
+import React from "react";
+import Head from "next/head";
+import HomePage from "@containers/home";
 
-## Deploy on Vercel
+export default function Home() {
+  return (
+    <>
+      <Head>
+        <title>SDG app</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <React.Fragment>
+        <HomePage />
+      </React.Fragment>
+    </>
+  );
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Instead of the apparaoch you may be familiar with &mdash; `import component from "../path/to/directory"`, we'd be referencing the component with an import alias like the one below; So you don't have to keep doing `"../../../../"` whenever you need to use a component.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```js
+import HomePage from "@containers/home";
+```
+
+The `layout/` container is where we'd place any global and reusable layouts of the App. So, when you notice that you're already repeating yourself over and over by creating a certain layout UI. Please move it into this folder. An example could be the `<Sidebar/>` and a `<UserProfile />` component. Merge them together and allow them receive a `reactNode` or `HTMLElement`.
+
+In `utils/`, we can place all our helper functions. Stuffs like image optimization scripts, dummy JSON data, etc.
+
+And lest I forget, we have the [styles/](styles) folder. All the global styles regarding this project will be kept in it. From design tokens with CSS variables to custom animations and some micro-interactions.
+
+## Feel free to ask any question as we progress.
+
+For now, we may be creating issues, and assigning some of you to them. So you get to work on UI implementation of the various screens assigned to you.
+
+The stack we're using for this project is
+
+- Next.js (React)
+- Styling &mdash; [styled-components](https://styled-components.com/)
+
+One last thing. If you notice any typos in this README, please feel free to open an issue.
